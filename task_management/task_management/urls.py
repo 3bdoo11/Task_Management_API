@@ -14,21 +14,38 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+"""
+URL configuration for task_management project.
+"""
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 from rest_framework.authtoken.views import obtain_auth_token 
 
 def home(request):
-    return JsonResponse({"message": "Welcome to Task Management API"})
+    """Simple API status check endpoint."""
+    return JsonResponse({
+        "message": "Welcome to Task Management API", 
+        "endpoints": {
+            "tasks_and_users": "/api/",
+            "register": "/api/users/register/",
+            "login": "/api-token-auth/",
+            "admin": "/admin/"
+        }
+    })
 
 urlpatterns = [
+    # 1. Django Admin Interface
     path('admin/', admin.site.urls),
+    
+    # 2. Base API Endpoints (Delegates to tasks/urls.py, which uses the router)
     path('api/', include('tasks.urls')),
-    path('admin/', admin.site.urls),
-    path('api/', include('tasks.urls')),
-    path('', home),
-    path('admin/', admin.site.urls),
-    path('api/', include('tasks.urls')),  
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),  
+    
+    # 3. Authentication Endpoint: Login to get a token (username & password POST)
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'), 
+    
+    # 4. Root Endpoint (Welcome message)
+    path('', home, name='home'),
 ]
+
+
