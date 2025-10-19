@@ -16,8 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
+
+def home(request):
+    return JsonResponse({"message": "Welcome to Task Management API"})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('tasks.urls')),  # all API endpoints start with /api/tasks/
+    path('api/', include('tasks.urls')),
+    path('admin/', admin.site.urls),
+    path('api/', include('tasks.urls')),
+    path('', home),  
 ]
