@@ -106,7 +106,7 @@ Follow these steps to get the project running locally:
 
 Clone the repository:
 
-git clone [YOUR-GITHUB-LINK]
+git clone https://github.com/3bdoo11/Task_Management_API.git
 cd Task_Management_API
 
 
