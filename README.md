@@ -1,174 +1,255 @@
-# Task Management API
+Task Management API (Capstone Project)
 
-## **Project Overview**
+Project Overview
 
-The Task Management API is a backend project built with **Django** and **Django REST Framework (DRF)**. It allows users to manage their tasks by creating, reading, updating, deleting, and marking tasks as complete or incomplete. The API enforces **user authentication** and **task ownership**, ensuring each user only accesses their own tasks.
+The Task Management API is a robust backend solution built using Django and Django REST Framework (DRF). It provides a secure, token-authenticated system for users to manage their personal tasks, complete with deadlines, priority levels, and status tracking.
 
-This project simulates a real-world backend developer workflow, including database management, API design, and RESTful principles.
+This project demonstrates proficiency in building a RESTful service, handling authentication, implementing custom logic (filtering, sorting, status updates), and enforcing object-level permissions (users can only access their own tasks).
 
----
+🚀 Key Features
 
-## **Features**
+Feature
 
-### **Task Management (CRUD)**
+Details
 
-* Create, read, update, and delete tasks
-* Task attributes:
+User Authentication
 
-  * `title`
-  * `description`
-  * `due_date`
-  * `priority` (Low, Medium, High)
-  * `status` (Pending, Completed)
-  * `completed_at` (timestamp)
+Secure registration (/api/users/register/) and token-based login (/api-token-auth/).
 
-### **User Management**
+Task CRUD
 
-* Create, read, update, and delete users
-* Unique username and email enforced
-* Each user manages their own tasks only
+Full Create, Read, Update, and Delete capabilities for tasks.
 
-### **Task Actions**
+Task Ownership
 
-* Mark tasks as complete → sets `status` to Completed and records timestamp
-* Mark tasks as incomplete → reverts `status` to Pending and clears timestamp
+Strictly enforced: a user can only view, modify, or delete tasks they own.
 
-### **Filtering and Sorting**
+Status Actions
 
-* Filter tasks by:
+Custom endpoints to explicitly set a task status to Completed or Pending, automatically managing the completed_at timestamp.
 
-  * `status` (Pending, Completed)
-  * `priority`
-  * `due_date`
-* Sort tasks by:
+Filtering
 
-  * `due_date`
-  * `priority`
+Filter tasks by status (Pending/Completed), priority (Low/Medium/High), or specific due_date.
 
-### **Authentication and Permissions**
+Sorting
 
-* Users must log in to access their tasks
-* Task endpoints are private and accessible only by task owners
+Sort task lists by due_date or priority.
 
----
+🛠️ Tech Stack
 
-## **Tech Stack**
+Backend: Python 3.11+
 
-* Python 3.11
-* Django 4.x
-* Django REST Framework
-* SQLite (default DB; can be swapped for PostgreSQL)
-* GitHub for version control
+Framework: Django 5.2.5
 
----
+API: Django REST Framework (DRF)
 
-## **API Endpoints**
+Database: SQLite (default for development)
 
-| Endpoint                           | Method    | Description                                                          |
-| ---------------------------------- | --------- | -------------------------------------------------------------------- |
-| `/api/tasks/`                      | GET       | List all tasks for the logged-in user (supports filters and sorting) |
-| `/api/tasks/`                      | POST      | Create a new task                                                    |
-| `/api/tasks/<id>/`                 | GET       | Retrieve a single task                                               |
-| `/api/tasks/<id>/`                 | PUT/PATCH | Update a task                                                        |
-| `/api/tasks/<id>/`                 | DELETE    | Delete a task                                                        |
-| `/api/tasks/<id>/mark_complete/`   | POST      | Mark a task as complete                                              |
-| `/api/tasks/<id>/mark_incomplete/` | POST      | Mark a task as incomplete                                            |
+Authentication: DRF Token Authentication
 
-> Note: All endpoints require **user authentication**.
+🌐 API Endpoints
 
----
+All endpoints under /api/tasks/ require a Token in the Authorization: Token <key> header, obtained from /api-token-auth/.
 
-## **Setup Instructions**
+Route
 
-1. **Clone the repository**
+Method
 
-```bash
-git clone https://github.com/3bdoo11/Task_Management_API.git
+Description
+
+/api/users/register/
+
+POST
+
+Public. Creates a new user account.
+
+/api-token-auth/
+
+POST
+
+Public. Logs in a user with username/password and returns an authentication token.
+
+/api/tasks/
+
+GET
+
+Private. Lists all tasks for the authenticated user. Supports filtering/sorting via query params.
+
+/api/tasks/
+
+POST
+
+Private. Creates a new task, automatically assigning the authenticated user as the owner.
+
+/api/tasks/<id>/
+
+GET/PUT/PATCH/DELETE
+
+Private. Retrieve, fully update (PUT), partially update (PATCH), or delete a specific task.
+
+/api/tasks/<id>/mark-complete/
+
+POST
+
+Private. Custom action to set the task status to Completed and record completed_at.
+
+/api/tasks/<id>/mark-incomplete/
+
+POST
+
+Private. Custom action to set the task status back to Pending and clear completed_at.
+
+⚙️ Setup and Installation
+
+Follow these steps to get the project running locally:
+
+Clone the repository:
+
+git clone [YOUR-GITHUB-LINK]
 cd Task_Management_API
-```
 
-2. **Create and activate a virtual environment**
 
-```bash
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
-```
 
-3. **Install dependencies**
+Create and activate a virtual environment:
 
-```bash
+python3 -m venv venv
+source venv/bin/activate # macOS/Linux
+# venv\Scripts\activate # Windows
+
+
+
+Install dependencies:
+
 pip install -r requirements.txt
-```
 
-4. **Apply migrations**
 
-```bash
+
+Apply database migrations:
+
+python manage.py makemigrations tasks
 python manage.py migrate
-```
 
-5. **Create a superuser (admin)**
 
-```bash
+
+Create an administrative user (optional):
+
 python manage.py createsuperuser
-```
 
-6. **Run the server**
 
-```bash
+
+Run the development server:
+
 python manage.py runserver
-```
-
-7. **Test the API**
-
-* Use **Postman**, **Insomnia**, or **curl** to interact with your endpoints
-
----
-
-## **Example API Requests**
-
-**Create a Task**
-
-```json
-POST /api/tasks/
-{
-  "title": "Finish Capstone",
-  "description": "Complete Part 4 of the backend project",
-  "due_date": "2025-10-25",
-  "priority": "High"
-}
-```
-
-**Mark Task as Complete**
-
-```json
-POST /api/tasks/1/mark_complete/
-```
-
-**Filter Tasks by Status**
-
-```http
-GET /api/tasks/?status=Pending
-```
-
-**Sort Tasks by Priority**
-
-```http
-GET /api/tasks/?sort_by=priority
-```
-
----
-
-## **Stretch Goals 
-
-* Task Categories (Work, Personal)
-* Recurring Tasks (daily, weekly)
-* Email or in-app notifications for upcoming due dates
-* Task history to track completed tasks
-* Collaborative tasks shared among multiple users
-
----
 
 
+
+The API will now be running on http://127.0.0.1:8000/.
+
+🧪 Example Usage (Testing with Postman/Insomnia)
+
+1. Register a User (Initial Setup)
+
+Route
+
+Method
+
+Body
+
+/api/users/register/
+
+POST
+
+{"username": "testuser", "email": "test@example.com", "password": "securepassword123"}
+
+2. Get Authentication Token (Login)
+
+Route
+
+Method
+
+Body
+
+/api-token-auth/
+
+POST
+
+{"username": "testuser", "password": "securepassword123"}
+
+Response: {"token": "YOUR_AUTH_TOKEN_HERE"} (Save this token!)
+
+
+
+
+
+3. Create Sample Tasks
+
+Ensure you add the header Authorization: Token YOUR_AUTH_TOKEN_HERE for each POST request below.
+
+Route
+
+Method
+
+Task Title & Priority
+
+Body (Example)
+
+/api/tasks/
+
+POST
+
+High Priority: Capstone Submission
+
+{"title": "Finalize Capstone Video and Submit", "description": "Ensure presentation is under 5 minutes.", "due_date": "2025-10-20", "priority": "High"}
+
+/api/tasks/
+
+POST
+
+Medium Priority: Update Dependencies
+
+{"title": "Review requirements.txt", "description": "Check for any outdated packages in the virtual environment.", "due_date": "2025-10-25", "priority": "Medium"}
+
+/api/tasks/
+
+POST
+
+Low Priority: Clean up comments
+
+{"title": "Remove unused code and comments", "description": "Tidy up the views.py and models.py files.", "due_date": "2025-11-01", "priority": "Low"}
+
+4. Filter and Sort Tasks
+
+Ensure you use the Authorization Header.
+
+Route
+
+Method
+
+Description
+
+/api/tasks/?status=Pending
+
+GET
+
+Filters tasks not yet completed.
+
+/api/tasks/?sort_by=priority
+
+GET
+
+Sorts tasks by High, Medium, then Low priority.
+
+5. Mark a Task as Complete (Assuming ID is 1)
+
+Route
+
+Method
+
+Body
+
+/api/tasks/1/mark-complete/
+
+POST
+
+(Empty body)
